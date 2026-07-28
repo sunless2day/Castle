@@ -2,7 +2,13 @@
 
 ---
 
-## Usage
+## Installation
+
+Clone the repo on your machine:
+
+```bash
+git clone https://github.com/sunless2day/Castle.git
+```
 
 cd into the project directory:
 
