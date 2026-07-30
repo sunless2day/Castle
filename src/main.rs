@@ -34,7 +34,9 @@ fn cmd_new(args: &[String]) -> ExitCode {
         eprintln!("Usage: castle new <project_name>");
         return ExitCode::FAILURE;
     }
-    if !is_project_path_valid(&args[2]) {
+
+    if let Err(err) = is_project_path_valid(&args[2]) {
+        eprintln!("{err}");
         return ExitCode::FAILURE;
     }
 
@@ -148,23 +150,20 @@ fn run_step(cmd: &mut Command, label: &str) -> Result<(), i32> {
     }
 }
 
-fn is_project_path_valid(arg: &str) -> bool {
+fn is_project_path_valid(arg: &str) -> Result<(), &'static str> {
     if arg.is_empty() {
-        eprintln!("Castle: Project must have a name.");
-        return false;
+        return Err("Castle: Project must have a name.");
     }
 
     if !arg.is_ascii() || arg.contains(' ') {
-        eprintln!("Castle: Project can't contain spaces or non-ASCII characters.");
-        return false;
+        return Err("Castle: Project can't contain spaces or non-ASCII characters.");
     }
 
     if arg.contains('/') || arg.contains("..") {
-        eprintln!("Castle: Project name must be a single directory name.");
-        return false;
+        return Err("Castle: Project name must be a single directory name.");
     }
 
-    true
+    Ok(())
 }
 
 fn parse_clang_version(stdout: &str) -> Option<&str> {
